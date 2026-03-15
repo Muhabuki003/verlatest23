@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERLA | Premium Activewear</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-ticker {
+            animation: ticker 30s linear infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-fade-in { animation: modalFadeIn 0.3s ease-out forwards; }
+
+        .image-hover-zoom {
+            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .group:hover .image-hover-zoom {
+            transform: scale(1.05);
+        }
+
+        .loader {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #000;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'verla-black': '#000000',
+                        'verla-white': '#FFFFFF',
+                        'verla-gray': '#555555',
+                        'verla-light-gray': '#F5F5F5',
+                        'verla-border': '#E5E5E5',
+                        'coming-soon': '#CCCCCC'
+                    }
+                }
+            }
+        }
+    </script>
+<base target="_blank">
+<base target="_blank">
+</head>
+<body class="bg-white text-black antialiased overflow-x-hidden">
+
+    <!-- First Time Visitor Popup Modal -->
+    <div id="signup-modal" class="fixed inset-0 z-[100] hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity opacity-0" id="modal-backdrop"></div>
+
+        <!-- Modal Content -->
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-4xl flex overflow-hidden shadow-2xl opacity-0 transform scale-95 transition-all duration-300" id="modal-content">
+                <!-- Left Side - Image -->
+                <div class="hidden md:block w-1/2 relative">
+                    <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=1975&auto=format&fit=crop" 
+                         alt="Join the Squad" 
+                         class="absolute inset-0 w-full h-full object-cover">
+                </div>
+
+                <!-- Right Side - Form -->
+                <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center relative">
+                    <!-- Close Button -->
+                    <button onclick="popup.close()" class="absolute top-4 right-4 text-gray-400 hover:text-black transition-colors">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+
+                    <!-- Logo -->
+                    <div class="flex justify-center mb-8">
+                        <img src="/mnt/kimi/upload/image (2).jpg" alt="VERLA" class="h-16 w-auto">
+                    </div>
+
+                    <!-- Content -->
+                    <h2 class="text-3xl md:text-4xl font-black text-center mb-2 tracking-tight uppercase">Join the Squad</h2>
+                    <p class="text-gray-600 text-center mb-8 text-sm leading-relaxed">
+                        Subscribe to our newsletter to be the first to hear about future drops, restocks, events and more.
+                    </p>
+
+                    <!-- Form -->
+                    <form onsubmit="popup.handleSubmit(event)" class="space-y-4">
+                        <input type="email" 
+                               placeholder="Email address" 
+                               required
+                               class="w-full border border-gray-300 px-6 py-4 text-center text-sm focus:outline-none focus:border-black transition-colors">
+                        <button type="submit" 
+                                class="w-full bg-black text-white py-4 font-bold tracking-[0.1em] uppercase hover:bg-gray-800 transition-colors text-sm">
+                            Continue
+                        </button>
+                    </form>
+
+                    <!-- Skip Link -->
+                    <button onclick="popup.close()" class="mt-6 text-xs text-gray-400 hover:text-black transition-colors uppercase tracking-wider text-center w-full">
+                        No thanks, I'll pay full price
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent py-6">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" onclick="router.navigate('home')" class="z-50 relative">
+                <img src="/mnt/kimi/upload/image (2).jpg" alt="VERLA" class="h-10 w-auto">
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex space-x-10">
+                <a href="#shop" onclick="router.navigate('shop')" class="text-xs font-bold tracking-[0.2em] text-black hover:text-gray-500 transition-colors uppercase">Shop</a>
+                <a href="#collections" class="text-xs font-bold tracking-[0.2em] text-black hover:text-gray-500 transition-colors uppercase">Collections</a>
+                <a href="#about" onclick="router.navigate('about')" class="text-xs font-bold tracking-[0.2em] text-black hover:text-gray-500 transition-colors uppercase">About</a>
+                <a href="#journal" class="text-xs font-bold tracking-[0.2em] text-black hover:text-gray-500 transition-colors uppercase">Journal</a>
+            </nav>
+
+            <!-- Icons -->
+            <div class="flex items-center space-x-6">
+                <button class="hidden md:block text-black hover:text-gray-500 transition-colors">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                </button>
+                <button onclick="cart.toggle()" class="relative text-black hover:text-gray-500 transition-colors">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-black text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full opacity-0 transition-opacity">0</span>
+                </button>
+                <button onclick="mobileMenu.toggle()" class="md:hidden text-black z-50 relative">
+                    <i data-lucide="menu" class="w-6 h-6" id="menu-icon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 bg-black z-40 transform translate-x-full transition-transform duration-300 flex flex-col justify-center items-center space-y-8 md:hidden">
+        <div class="mb-8">
+            <img src="/mnt/kimi/upload/image (2).jpg" alt="VERLA" class="h-12 w-auto invert">
+        </div>
+        <a href="#shop" onclick="mobileMenu.close(); router.navigate('shop')" class="text-white text-2xl font-bold tracking-[0.2em] uppercase">Shop</a>
+        <a href="#collections" onclick="mobileMenu.close()" class="text-white text-2xl font-bold tracking-[0.2em] uppercase">Collections</a>
+        <a href="#about" onclick="mobileMenu.close(); router.navigate('about')" class="text-white text-2xl font-bold tracking-[0.2em] uppercase">About</a>
+        <a href="#journal" onclick="mobileMenu.close()" class="text-white text-2xl font-bold tracking-[0.2em] uppercase">Journal</a>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div id="cart-overlay" onclick="cart.toggle()" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[60] opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-[70] transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+            <h2 class="text-lg font-bold tracking-[0.1em] uppercase">Your Cart</h2>
+            <button onclick="cart.toggle()"><i data-lucide="x" class="w-6 h-6"></i></button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-6">
+            <div class="h-full flex flex-col items-center justify-center text-gray-400 space-y-4">
+                <i data-lucide="shopping-bag" class="w-12 h-12 stroke-1"></i>
+                <p class="text-sm">Your cart is empty</p>
+            </div>
+        </div>
+        <div class="p-6 border-t border-gray-100 bg-gray-50">
+            <div class="flex justify-between mb-4 text-sm">
+                <span class="font-medium">Subtotal</span>
+                <span id="cart-total" class="font-bold">$0.00</span>
+            </div>
+            <button onclick="cart.checkout()" class="w-full bg-black text-white py-4 font-bold tracking-[0.1em] uppercase hover:bg-gray-800 transition-colors">
+                Checkout
+            </button>
+        </div>
+    </div>
+
+    <main id="app"></main>
+
+    <!-- Footer -->
+    <footer class="bg-white pt-24 pb-12 border-t border-gray-100">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="space-y-6">
+                    <img src="/mnt/kimi/upload/image (2).jpg" alt="VERLA" class="h-8 w-auto">
+                    <p class="text-gray-500 text-sm leading-relaxed">Premium activewear for the modern woman. Built for performance, designed for life.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 text-xs tracking-[0.2em] uppercase">Shop</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-black transition-colors">New Arrivals</a></li>
+                        <li><a href="#" class="hover:text-black transition-colors">Best Sellers</a></li>
+                        <li><a href="#" class="hover:text-black transition-colors">Leggings</a></li>
+                        <li><a href="#" class="hover:text-black transition-colors">Sports Bras</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 text-xs tracking-[0.2em] uppercase">Help</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-black transition-colors">Shipping & Returns</a></li>
+                        <li><a href="#" class="hover:text-black transition-colors">Size Guide</a></li>
+                        <li><a href="#" class="hover:text-black transition-colors">FAQ</a></li>
+                        <li><a href="#" class="hover:text-black transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 text-xs tracking-[0.2em] uppercase">Stay Connected</h4>
+                    <div class="flex space-x-4 mb-6">
+                        <a href="#" class="text-black hover:text-gray-500"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                        <a href="#" class="text-black hover:text-gray-500"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                        <a href="#" class="text-black hover:text-gray-500"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                    </div>
+                    <div class="flex">
+                        <input type="email" placeholder="Email address" class="flex-1 bg-transparent border border-black px-4 py-2 text-sm focus:outline-none">
+                        <button class="bg-black text-white px-4 py-2 text-xs font-bold uppercase tracking-wider">Join</button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center text-xs text-gray-400 pt-8 border-t border-gray-100">
+                © 2025 VERLA. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Shopify Configuration
+        const SHOPIFY_CONFIG = {
+            domain: 'tcqqc0-ka.myshopify.com',
+            token: '2daa5f1f73f65d7429cecba98dd81e74',
+            apiVersion: '2024-01'
+        };
+
+        // EXACT Color Palette from Screenshot with Image Mappings
+        const COLOR_PALETTE = {
+            'Pink': { hex: '#F5E6F5', active: true, image: '/mnt/kimi/upload/9a0bf0e1-9e0d-4a4d-826a-b74cd4b65954.jpg' },
+            'Light Blue': { hex: '#E8F4F8', active: true, image: null },
+            'Cream Yellow': { hex: '#FFFACD', active: true, image: '/mnt/kimi/upload/image.png' },
+            'Milky Apricot': { hex: '#F5E6D3', active: true, image: '/mnt/kimi/upload/image(1).png' },
+            'Olive Green': { hex: '#556B2F', active: true, image: '/mnt/kimi/upload/image(2).png' },
+            'Gray Blue': { hex: '#5A7A8A', active: true, image: '/mnt/kimi/upload/image(3).png' },
+            'Blueberry': { hex: '#2C3E50', active: true, image: '/mnt/kimi/upload/image(4).png' },
+            'Black': { hex: '#000000', active: true, image: '/mnt/kimi/upload/image(5).png' },
+            'Dark Purple': { hex: '#4A0E4E', active: true, image: '/mnt/kimi/upload/image(6).png' },
+            'Rumba Red': { hex: '#8B0000', active: false, image: null },
+            'Dark Coffee': { hex: '#3D2817', active: false, image: null },
+            'Carter Purple': { hex: '#6B0F6B', active: false, image: null }
+        };
+
+        // State Management
+        const state = {
+            cart: null,
+            products: [],
+            currentView: 'home',
+            selectedProduct: null,
+            selectedVariants: {}
+        };
+
+        // Popup Management
+        const popup = {
+            init() {
+                const hasSeenPopup = localStorage.getItem('verla_popup_seen');
+                if (!hasSeenPopup) {
+                    setTimeout(() => {
+                        this.open();
+                    }, 2000);
+                }
+            },
+
+            open() {
+                const modal = document.getElementById('signup-modal');
+                const backdrop = document.getElementById('modal-backdrop');
+                const content = document.getElementById('modal-content');
+
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+
+                setTimeout(() => {
+                    backdrop.classList.remove('opacity-0');
+                    backdrop.classList.add('opacity-100');
+                    content.classList.remove('opacity-0', 'scale-95');
+                    content.classList.add('opacity-100', 'scale-100');
+                }, 10);
+
+                lucide.createIcons();
+            },
+
+            close() {
+                const modal = document.getElementById('signup-modal');
+                const backdrop = document.getElementById('modal-backdrop');
+                const content = document.getElementById('modal-content');
+
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0');
+                content.classList.remove('opacity-100', 'scale-100');
+                content.classList.add('opacity-0', 'scale-95');
+
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }, 300);
+
+                localStorage.setItem('verla_popup_seen', 'true');
+            },
+
+            handleSubmit(e) {
+                e.preventDefault();
+                const email = e.target.querySelector('input[type="email"]').value;
+                console.log('Email submitted:', email);
+                alert('Welcome to the squad! Check your inbox for a special offer.');
+                this.close();
+            }
+        };
+
+        // Shopify API Client
+        const shopifyClient = {
+            async fetch(query, variables = {}) {
+                const url = `https://${SHOPIFY_CONFIG.domain}/api/${SHOPIFY_CONFIG.apiVersion}/graphql.json`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.token
+                    },
+                    body: JSON.stringify({ query, variables })
+                });
+                const data = await response.json();
+                if (data.errors) throw new Error(data.errors[0].message);
+                return data.data;
+            }
+        };
+
+        // Cart Management
+        const cart = {
+            async init() {
+                const query = `
+                    mutation cartCreate {
+                        cartCreate(input: {}) {
+                            cart {
+                                id
+                                checkoutUrl
+                                lines(first: 10) {
+                                    edges {
+                                        node {
+                                            id
+                                            quantity
+                                            merchandise {
+                                                ... on ProductVariant {
+                                                    id
+                                                    title
+                                                    product {
+                                                        title
+                                                        images(first: 1) {
+                                                            edges { node { url } }
+                                                        }
+                                                    }
+                                                    price { amount }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                cost {
+                                    totalAmount { amount currencyCode }
+                                }
+                            }
+                        }
+                    }
+                `;
+                const data = await shopifyClient.fetch(query);
+                state.cart = data.cartCreate.cart;
+                this.updateUI();
+            },
+
+            async addItem(variantId) {
+                if (!state.cart) await this.init();
+
+                const query = `
+                    mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+                        cartLinesAdd(cartId: $cartId, lines: $lines) {
+                            cart {
+                                id
+                                checkoutUrl
+                                lines(first: 10) {
+                                    edges {
+                                        node {
+                                            id
+                                            quantity
+                                            merchandise {
+                                                ... on ProductVariant {
+                                                    id
+                                                    title
+                                                    product {
+                                                        title
+                                                        images(first: 1) {
+                                                            edges { node { url } }
+                                                        }
+                                                    }
+                                                    price { amount }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                cost {
+                                    totalAmount { amount currencyCode }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                const data = await shopifyClient.fetch(query, {
+                    cartId: state.cart.id,
+                    lines: [{ merchandiseId: variantId, quantity: 1 }]
+                });
+
+                state.cart = data.cartLinesAdd.cart;
+                this.updateUI();
+                this.open();
+            },
+
+            updateUI() {
+                const count = state.cart?.lines.edges.reduce((acc, item) => acc + item.node.quantity, 0) || 0;
+                const countEl = document.getElementById('cart-count');
+                countEl.textContent = count;
+                countEl.style.opacity = count > 0 ? '1' : '0';
+
+                const itemsContainer = document.getElementById('cart-items');
+                const totalEl = document.getElementById('cart-total');
+
+                if (state.cart?.lines.edges.length > 0) {
+                    itemsContainer.innerHTML = state.cart.lines.edges.map(({ node: item }) => `
+                        <div class="flex gap-4 fade-in">
+                            <div class="w-20 h-24 bg-gray-100 overflow-hidden flex-shrink-0">
+                                <img src="${item.merchandise.product.images.edges[0]?.node.url || 'https://placehold.co/100x120'}" 
+                                     class="w-full h-full object-cover" alt="">
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-sm">${item.merchandise.product.title}</h3>
+                                <p class="text-xs text-gray-500 mt-1">${item.merchandise.title}</p>
+                                <p class="text-sm font-medium mt-2">$${parseFloat(item.merchandise.price.amount).toFixed(2)}</p>
+                                <div class="flex items-center mt-2 space-x-2">
+                                    <span class="text-xs text-gray-500">Qty: ${item.quantity}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    totalEl.textContent = `$${parseFloat(state.cart.cost.totalAmount.amount).toFixed(2)}`;
+                } else {
+                    itemsContainer.innerHTML = `
+                        <div class="h-full flex flex-col items-center justify-center text-gray-400 space-y-4">
+                            <i data-lucide="shopping-bag" class="w-12 h-12 stroke-1"></i>
+                            <p class="text-sm">Your cart is empty</p>
+                        </div>
+                    `;
+                    totalEl.textContent = '$0.00';
+                }
+                lucide.createIcons();
+            },
+
+            toggle() {
+                const drawer = document.getElementById('cart-drawer');
+                const overlay = document.getElementById('cart-overlay');
+                const isOpen = !drawer.classList.contains('translate-x-full');
+
+                if (isOpen) {
+                    drawer.classList.add('translate-x-full');
+                    overlay.classList.remove('opacity-100', 'pointer-events-auto');
+                    overlay.classList.add('opacity-0', 'pointer-events-none');
+                } else {
+                    drawer.classList.remove('translate-x-full');
+                    overlay.classList.remove('opacity-0', 'pointer-events-none');
+                    overlay.classList.add('opacity-100', 'pointer-events-auto');
+                }
+            },
+
+            open() {
+                const drawer = document.getElementById('cart-drawer');
+                const overlay = document.getElementById('cart-overlay');
+                drawer.classList.remove('translate-x-full');
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                overlay.classList.add('opacity-100', 'pointer-events-auto');
+            },
+
+            checkout() {
+                if (state.cart?.checkoutUrl) {
+                    window.location.href = state.cart.checkoutUrl;
+                }
+            }
+        };
+
+        // Mobile Menu
+        const mobileMenu = {
+            toggle() {
+                const menu = document.getElementById('mobile-menu');
+                const icon = document.getElementById('menu-icon');
+                const isOpen = !menu.classList.contains('translate-x-full');
+
+                if (isOpen) {
+                    this.close();
+                } else {
+                    menu.classList.remove('translate-x-full');
+                    icon.setAttribute('data-lucide', 'x');
+                    lucide.createIcons();
+                    document.body.style.overflow = 'hidden';
+                }
+            },
+            close() {
+                const menu = document.getElementById('mobile-menu');
+                const icon = document.getElementById('menu-icon');
+                menu.classList.add('translate-x-full');
+                icon.setAttribute('data-lucide', 'menu');
+                lucide.createIcons();
+                document.body.style.overflow = '';
+            }
+        };
+
+        // Header Scroll Effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.remove('bg-transparent', 'py-6');
+                header.classList.add('bg-white/95', 'backdrop-blur-sm', 'py-4', 'shadow-sm');
+            } else {
+                header.classList.add('bg-transparent', 'py-6');
+                header.classList.remove('bg-white/95', 'backdrop-blur-sm', 'py-4', 'shadow-sm');
+            }
+        });
+
+        // Variant Selector Logic
+        const variantSelector = {
+            selectColor(handle, color, element, isDetail = false) {
+                state.selectedVariants[handle].color = color;
+
+                if (isDetail && COLOR_PALETTE[color] && COLOR_PALETTE[color].image) {
+                    const mainImage = document.getElementById('main-image');
+                    if (mainImage) {
+                        mainImage.src = COLOR_PALETTE[color].image;
+                    }
+                }
+
+                if (isDetail) {
+                    document.getElementById('selected-color-name').textContent = color;
+                    element.parentElement.querySelectorAll('button').forEach(btn => {
+                        btn.classList.remove('border-black', 'ring-2', 'ring-black', 'ring-offset-2');
+                        btn.classList.add('border-gray-200');
+                    });
+                    element.classList.remove('border-gray-200');
+                    element.classList.add('border-black', 'ring-2', 'ring-black', 'ring-offset-2');
+                } else {
+                    router.loadProducts();
+                }
+
+                this.findAndUpdateVariant(handle);
+            },
+
+            selectSize(handle, size, element, isDetail = false) {
+                state.selectedVariants[handle].size = size;
+
+                if (isDetail) {
+                    document.getElementById('selected-size-name').textContent = size;
+                    element.parentElement.querySelectorAll('button').forEach(btn => {
+                        btn.classList.remove('border-black', 'bg-black', 'text-white');
+                        btn.classList.add('border-gray-200');
+                    });
+                    element.classList.remove('border-gray-200');
+                    element.classList.add('border-black', 'bg-black', 'text-white');
+                } else {
+                    router.loadProducts();
+                }
+
+                this.findAndUpdateVariant(handle);
+            },
+
+            findAndUpdateVariant(handle) {
+                const product = state.products.find(p => p.handle === handle) || state.selectedProduct;
+                if (!product) return;
+
+                const selectedColor = state.selectedVariants[handle].color;
+                const selectedSize = state.selectedVariants[handle].size;
+
+                const matchingVariant = product.variants.edges.find(({ node: variant }) => {
+                    const variantColor = variant.selectedOptions.find(opt => opt.name.toLowerCase().includes('color'))?.value;
+                    const variantSize = variant.selectedOptions.find(opt => opt.name.toLowerCase().includes('size'))?.value;
+                    return variantColor === selectedColor && variantSize === selectedSize;
+                });
+
+                if (matchingVariant) {
+                    state.selectedVariants[handle].variantId = matchingVariant.node.id;
+                }
+            },
+
+            addToCart(handle) {
+                const variantId = state.selectedVariants[handle]?.variantId;
+                if (variantId) {
+                    cart.addItem(variantId);
+                } else {
+                    alert('Please select a color and size first');
+                }
+            }
+        };
+
+        // Views
+        const views = {
+            home: () => `
+                <div class="fade-in">
+                    <section class="relative h-screen w-full overflow-hidden flex items-center justify-center">
+                        <div class="absolute inset-0 z-0">
+                            <img src="https://images.unsplash.com/photo-1518310383802-640c2de311b2?q=80&w=2070&auto=format&fit=crop" 
+                                 alt="VERLA Hero" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent"></div>
+                        </div>
+                        <div class="relative z-10 container mx-auto px-6 grid grid-cols-1 md:grid-cols-2">
+                            <div class="space-y-6">
+                                <h1 class="text-5xl md:text-7xl font-black text-black leading-[0.9] tracking-tighter uppercase">
+                                    Built for Her.<br>
+                                    Worn for<br>
+                                    Everything.
+                                </h1>
+                                <p class="text-lg text-gray-800 max-w-md font-medium">
+                                    Premium activewear engineered for performance, designed for life.
+                                </p>
+                                <a href="#shop" onclick="router.navigate('shop')" 
+                                   class="inline-block bg-black text-white px-10 py-4 font-bold tracking-[0.1em] uppercase hover:bg-gray-800 transition-all text-sm">
+                                    Shop the Collection
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="bg-black text-white py-3 overflow-hidden whitespace-nowrap flex relative z-20">
+                        <div class="animate-ticker flex space-x-12 px-4">
+                            ${Array(4).fill(`
+                                <span class="text-xs font-bold tracking-[0.2em] flex items-center uppercase">
+                                    <i data-lucide="star" class="w-3 h-3 mr-2 fill-white"></i> Free Returns
+                                </span>
+                                <span class="text-xs font-bold tracking-[0.2em] flex items-center uppercase">
+                                    <i data-lucide="star" class="w-3 h-3 mr-2 fill-white"></i> Sustainable Fabrics
+                                </span>
+                                <span class="text-xs font-bold tracking-[0.2em] flex items-center uppercase">
+                                    <i data-lucide="star" class="w-3 h-3 mr-2 fill-white"></i> Designed for Performance
+                                </span>
+                                <span class="text-xs font-bold tracking-[0.2em] flex items-center uppercase">
+                                    <i data-lucide="star" class="w-3 h-3 mr-2 fill-white"></i> Made for Movement
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <section id="shop" class="py-24 bg-white">
+                        <div class="container mx-auto px-6">
+                            <div class="flex justify-between items-end mb-12">
+                                <h2 class="text-3xl md:text-4xl font-black tracking-tight uppercase">New Arrivals</h2>
+                                <a href="#" class="hidden md:block text-xs font-bold border-b border-black pb-1 hover:text-gray-600 hover:border-gray-600 transition-colors uppercase tracking-wider">
+                                    View All
+                                </a>
+                            </div>
+                            <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12">
+                                <div class="col-span-full flex justify-center py-12">
+                                    <div class="loader"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="py-24 bg-white border-t border-gray-100">
+                        <div class="container mx-auto px-6">
+                            <div class="text-center mb-16">
+                                <h2 class="text-3xl md:text-4xl font-black mb-4 tracking-tight uppercase">The Palette</h2>
+                                <p class="text-gray-500 max-w-md mx-auto">Shop your shade. New colors dropping soon.</p>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8">
+                                ${Object.entries(COLOR_PALETTE).map(([name, data]) => `
+                                    <div class="flex flex-col items-center group">
+                                        <div class="w-16 h-16 rounded-full mb-3 relative transition-all duration-300 ${data.active ? 'cursor-pointer hover:scale-110 ring-2 ring-offset-2 ring-black' : 'opacity-40 grayscale cursor-not-allowed'}"
+                                             style="background-color: ${data.hex}; border: ${name === 'Cream Yellow' || name === 'Milky Apricot' ? '1px solid #eee' : 'none'}">
+                                            ${!data.active ? '<div class="absolute inset-0 flex items-center justify-center"><div class="w-8 h-[1px] bg-gray-400 rotate-45"></div></div>' : ''}
+                                        </div>
+                                        <span class="text-xs font-bold tracking-wider text-center uppercase">${name}</span>
+                                        ${!data.active ? '<span class="text-[10px] text-gray-400 mt-1 uppercase tracking-wider">Coming Soon</span>' : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="py-12 bg-white overflow-hidden">
+                        <div class="flex space-x-4 px-4 md:px-0 md:space-x-8 w-max animate-ticker hover:[animation-play-state:paused]">
+                            ${[
+                                'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=1975&auto=format&fit=crop',
+                                'https://images.unsplash.com/photo-1594381898411-846e7d193883?q=80&w=1974&auto=format&fit=crop',
+                                'https://images.unsplash.com/photo-1605296867304-6c045ee640d1?q=80&w=2071&auto=format&fit=crop',
+                                'https://images.unsplash.com/photo-1518310383802-640c2de311b2?q=80&w=2070&auto=format&fit=crop'
+                            ].map((src, i) => `
+                                <div class="w-[300px] md:w-[400px] h-[400px] md:h-[500px] relative flex-shrink-0 overflow-hidden group">
+                                    <img src="${src}" alt="Editorial" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+
+                    <section class="py-24 bg-white border-t border-gray-100">
+                        <div class="container mx-auto px-6">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                                ${[
+                                    { title: "Performance Fabric", desc: "Every piece engineered to move with you, not against you.", icon: "✦" },
+                                    { title: "Built to Last", desc: "Designed for the long run — literally and figuratively.", icon: "◈" },
+                                    { title: "For Every Body", desc: "Inclusive sizing, thoughtful cuts, zero compromise.", icon: "◎" }
+                                ].map(val => `
+                                    <div class="text-center space-y-4">
+                                        <div class="text-4xl font-thin mb-4">${val.icon}</div>
+                                        <h3 class="font-bold tracking-[0.1em] text-sm uppercase">${val.title}</h3>
+                                        <p class="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">${val.desc}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="py-24 bg-gray-50">
+                        <div class="container mx-auto px-6">
+                            <h2 class="text-3xl font-black text-center mb-16 tracking-tight uppercase">What She Said</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                ${[1, 2, 3].map(() => `
+                                    <div class="bg-white p-8 shadow-sm">
+                                        <div class="flex text-black mb-4">
+                                            ${Array(5).fill('<i data-lucide="star" class="w-3 h-3 fill-current"></i>').join('')}
+                                        </div>
+                                        <p class="text-gray-600 mb-6 italic text-sm leading-relaxed">"The quality is absolutely insane. I've never felt more confident at the gym. The fabric is buttery soft but holds everything in place perfectly."</p>
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 bg-gray-200 rounded-full mr-3"></div>
+                                            <div>
+                                                <p class="text-sm font-bold">Sarah M.</p>
+                                                <p class="text-xs text-gray-400">Verified Buyer</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="py-24 bg-black text-white">
+                        <div class="container mx-auto px-6 text-center">
+                            <h2 class="text-3xl md:text-5xl font-black mb-6 tracking-tight uppercase">Be First. Always.</h2>
+                            <p class="text-gray-400 mb-10 max-w-md mx-auto">Get early access to new drops, exclusive offers, and behind-the-scenes from VERLA.</p>
+                            <div class="flex flex-col md:flex-row gap-4 justify-center max-w-lg mx-auto">
+                                <input type="email" placeholder="Enter your email" 
+                                       class="bg-transparent border border-white/30 px-6 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-white flex-1 text-sm">
+                                <button class="bg-white text-black px-8 py-4 font-bold tracking-[0.1em] uppercase hover:bg-gray-200 transition-colors text-sm">
+                                    Join the List
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            `,
+
+            product: (handle) => `
+                <div class="pt-24 pb-24 min-h-screen bg-white fade-in">
+                    <div class="container mx-auto px-6">
+                        <button onclick="router.navigate('home')" class="mb-8 flex items-center text-sm text-gray-500 hover:text-black transition-colors">
+                            <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Back to Shop
+                        </button>
+                        <div id="product-detail-content" class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24">
+                            <div class="col-span-full flex justify-center py-12">
+                                <div class="loader"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+
+            about: () => `
+                <div class="fade-in">
+                    <section class="relative h-[70vh] w-full overflow-hidden flex items-center justify-center">
+                        <div class="absolute inset-0 z-0">
+                            <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=1975&auto=format&fit=crop" 
+                                 class="w-full h-full object-cover" alt="About VERLA">
+                        </div>
+                        <div class="relative z-10 container mx-auto px-6 text-center">
+                            <h1 class="text-5xl md:text-7xl font-black text-white leading-tight tracking-tighter uppercase drop-shadow-lg">
+                                We Build for the<br>Woman Who Moves.
+                            </h1>
+                        </div>
+                    </section>
+
+                    <section class="py-24 bg-white">
+                        <div class="container mx-auto px-6 max-w-3xl">
+                            <p class="text-xl md:text-2xl leading-relaxed text-gray-800 font-light mb-12 text-center">
+                                VERLA was built for the woman who doesn't slow down. Whether you're training before dawn, running between meetings, or showing up for yourself in every form — we build the gear that keeps up.
+                            </p>
+                            <div class="prose prose-lg mx-auto text-gray-600">
+                                <p class="mb-6">Every piece is engineered for performance and designed with intention. No excess. No compromise. Just activewear that works as hard as you do.</p>
+                                <p>We believe in the power of movement. Not just physical, but the movement of progress, of change, of becoming your strongest self. Our fabrics are sourced from sustainable mills, our factories are ethically certified, and our designs are tested by athletes who demand the best.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="py-24 bg-gray-50">
+                        <div class="container mx-auto px-6">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                                <div class="bg-white p-8">
+                                    <h3 class="font-bold text-lg mb-4 uppercase tracking-wider">Our Mission</h3>
+                                    <p class="text-gray-600 text-sm leading-relaxed">To empower women through high-performance activewear that doesn't compromise on style or sustainability.</p>
+                                </div>
+                                <div class="bg-white p-8">
+                                    <h3 class="font-bold text-lg mb-4 uppercase tracking-wider">Our Materials</h3>
+                                    <p class="text-gray-600 text-sm leading-relaxed">Premium recycled nylon and spandex blends that offer compression, breathability, and a second-skin feel.</p>
+                                </div>
+                                <div class="bg-white p-8">
+                                    <h3 class="font-bold text-lg mb-4 uppercase tracking-wider">Our Promise</h3>
+                                    <p class="text-gray-600 text-sm leading-relaxed">Every garment is backed by our 100% satisfaction guarantee. If it doesn't perform, we make it right.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            `
+        };
+
+        // Router
+        const router = {
+            navigate(view, param = null) {
+                state.currentView = view;
+                const app = document.getElementById('app');
+
+                if (view === 'home') {
+                    app.innerHTML = views.home();
+                    this.loadProducts();
+                } else if (view === 'product') {
+                    app.innerHTML = views.product(param);
+                    this.loadProductDetail(param);
+                } else if (view === 'about') {
+                    app.innerHTML = views.about();
+                } else if (view === 'shop') {
+                    app.innerHTML = views.home();
+                    this.loadProducts();
+                    setTimeout(() => {
+                        document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                }
+
+                lucide.createIcons();
+                window.scrollTo(0, 0);
+            },
+
+            async loadProducts() {
+                const query = `
+                    query {
+                        products(first: 8, query: "yoga OR pants OR legging OR activewear") {
+                            edges {
+                                node {
+                                    id
+                                    title
+                                    handle
+                                    priceRange {
+                                        minVariantPrice { amount currencyCode }
+                                    }
+                                    images(first: 2) {
+                                        edges { node { url altText } }
+                                    }
+                                    options {
+                                        name
+                                        values
+                                    }
+                                    variants(first: 50) {
+                                        edges {
+                                            node {
+                                                id
+                                                title
+                                                availableForSale
+                                                price { amount }
+                                                selectedOptions {
+                                                    name
+                                                    value
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    const data = await shopifyClient.fetch(query);
+                    const products = data.products.edges.map(e => e.node);
+                    state.products = products;
+
+                    const grid = document.getElementById('product-grid');
+                    if (grid) {
+                        if (products.length === 0) {
+                            this.loadAllProducts();
+                            return;
+                        }
+
+                        grid.innerHTML = products.map(product => {
+                            if (!state.selectedVariants[product.handle]) {
+                                const firstVariant = product.variants.edges[0]?.node;
+                                const firstColor = firstVariant?.selectedOptions.find(opt => opt.name.toLowerCase().includes('color'))?.value || 
+                                                  product.options.find(opt => opt.name.toLowerCase().includes('color'))?.values[0] || '';
+                                const firstSize = firstVariant?.selectedOptions.find(opt => opt.name.toLowerCase().includes('size'))?.value || 
+                                                  product.options.find(opt => opt.name.toLowerCase().includes('size'))?.values[0] || 'M';
+
+                                state.selectedVariants[product.handle] = {
+                                    color: firstColor,
+                                    size: firstSize,
+                                    variantId: firstVariant?.id
+                                };
+                            }
+
+                            const colorOption = product.options.find(opt => opt.name.toLowerCase().includes('color'));
+                            const sizeOption = product.options.find(opt => opt.name.toLowerCase().includes('size'));
+                            const selectedState = state.selectedVariants[product.handle];
+
+                            return `
+                            <div class="group">
+                                <div class="relative aspect-[3/4] bg-gray-100 overflow-hidden mb-4 cursor-pointer" 
+                                     onclick="router.navigate('product', '${product.handle}')">
+                                    <img src="${product.images.edges[0]?.node.url}" 
+                                         alt="${product.title}"
+                                         class="w-full h-full object-cover image-hover-zoom">
+                                    ${product.images.edges[1] ? `
+                                        <img src="${product.images.edges[1]?.node.url}" 
+                                             class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0 group-hover:opacity-100" alt="">
+                                    ` : ''}
+
+                                    <div class="absolute bottom-0 left-0 right-0 p-4 transition-transform duration-300 translate-y-full group-hover:translate-y-0">
+                                        <button onclick="event.stopPropagation(); variantSelector.addToCart('${product.handle}')"
+                                                class="w-full bg-white text-black py-3 font-bold text-xs tracking-[0.1em] uppercase hover:bg-black hover:text-white transition-colors shadow-lg">
+                                            Quick Add
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-start">
+                                        <h3 class="font-bold text-sm text-black uppercase tracking-wider">${product.title}</h3>
+                                        <p class="text-sm text-gray-500">$${parseFloat(product.priceRange.minVariantPrice.amount).toFixed(2)}</p>
+                                    </div>
+
+                                    ${colorOption ? `
+                                    <div class="flex items-center gap-2">
+                                        <div class="flex gap-1">
+                                            ${colorOption.values.slice(0, 4).map(color => {
+                                                const isSelected = selectedState?.color === color;
+                                                const colorData = COLOR_PALETTE[color] || { hex: '#ccc' };
+                                                return `
+                                                <button onclick="event.stopPropagation(); variantSelector.selectColor('${product.handle}', '${color}', this)"
+                                                        class="w-5 h-5 rounded-full border transition-all hover:scale-110 ${isSelected ? 'border-black ring-1 ring-black ring-offset-1' : 'border-gray-300'}"
+                                                        style="background-color: ${colorData.hex}; ${color === 'Cream Yellow' || color === 'Milky Apricot' ? 'border-color: #ddd;' : ''}"
+                                                        title="${color}">
+                                                </button>
+                                                `;
+                                            }).join('')}
+                                            ${colorOption.values.length > 4 ? `<span class="text-[10px] text-gray-400 ml-1">+${colorOption.values.length - 4}</span>` : ''}
+                                        </div>
+                                    </div>
+                                    ` : ''}
+
+                                    ${sizeOption ? `
+                                    <div class="flex items-center gap-1">
+                                        ${sizeOption.values.slice(0, 5).map(size => {
+                                            const isSelected = selectedState?.size === size;
+                                            const isEV = size.toLowerCase().includes('extended');
+                                            const displaySize = isEV ? 'EV' : size;
+                                            return `
+                                            <button onclick="event.stopPropagation(); variantSelector.selectSize('${product.handle}', '${size}', this)"
+                                                    class="w-7 h-7 text-[10px] font-bold border transition-all ${isSelected ? 'border-black bg-black text-white' : 'border-gray-200 hover:border-gray-400'}"
+                                                    title="${size}">
+                                                ${displaySize}
+                                            </button>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `}).join('');
+                        lucide.createIcons();
+                    }
+                } catch (error) {
+                    console.error('Failed to load products:', error);
+                    document.getElementById('product-grid').innerHTML = '<p class="col-span-full text-center text-gray-500">Unable to load products.</p>';
+                }
+            },
+
+            async loadAllProducts() {
+                const query = `
+                    query {
+                        products(first: 8) {
+                            edges {
+                                node {
+                                    id
+                                    title
+                                    handle
+                                    priceRange {
+                                        minVariantPrice { amount currencyCode }
+                                    }
+                                    images(first: 2) {
+                                        edges { node { url altText } }
+                                    }
+                                    options {
+                                        name
+                                        values
+                                    }
+                                    variants(first: 50) {
+                                        edges {
+                                            node {
+                                                id
+                                                title
+                                                availableForSale
+                                                price { amount }
+                                                selectedOptions {
+                                                    name
+                                                    value
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    const data = await shopifyClient.fetch(query);
+                    const products = data.products.edges.map(e => e.node);
+                    state.products = products;
+
+                    const grid = document.getElementById('product-grid');
+                    if (grid && products.length > 0) {
+                        this.renderProductGrid(products, grid);
+                    }
+                } catch (error) {
+                    console.error('Failed to load all products:', error);
+                }
+            },
+
+            renderProductGrid(products, grid) {
+                grid.innerHTML = products.map(product => {
+                    if (!state.selectedVariants[product.handle]) {
+                        const firstVariant = product.variants.edges[0]?.node;
+                        const firstColor = firstVariant?.selectedOptions.find(opt => opt.name.toLowerCase().includes('color'))?.value || 
+                                          product.options.find(opt => opt.name.toLowerCase().includes('color'))?.values[0] || '';
+                        const firstSize = firstVariant?.selectedOptions.find(opt => opt.name.toLowerCase().includes('size'))?.value || 
+                                          product.options.find(opt => opt.name.toLowerCase().includes('size'))?.values[0] || 'M';
+
+                        state.selectedVariants[product.handle] = {
+                            color: firstColor,
+                            size: firstSize,
+                            variantId: firstVariant?.id
+                        };
+                    }
+
+                    const colorOption = product.options.find(opt => opt.name.toLowerCase().includes('color'));
+                    const sizeOption = product.options.find(opt => opt.name.toLowerCase().includes('size'));
+                    const selectedState = state.selectedVariants[product.handle];
+
+                    return `
+                    <div class="group">
+                        <div class="relative aspect-[3/4] bg-gray-100 overflow-hidden mb-4 cursor-pointer" 
+                             onclick="router.navigate('product', '${product.handle}')">
+                            <img src="${product.images.edges[0]?.node.url}" 
+                                 alt="${product.title}"
+                                 class="w-full h-full object-cover image-hover-zoom">
+                            ${product.images.edges[1] ? `
+                                <img src="${product.images.edges[1]?.node.url}" 
+                                     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0 group-hover:opacity-100" alt="">
+                            ` : ''}
+
+                            <div class="absolute bottom-0 left-0 right-0 p-4 transition-transform duration-300 translate-y-full group-hover:translate-y-0">
+                                <button onclick="event.stopPropagation(); variantSelector.addToCart('${product.handle}')"
+                                        class="w-full bg-white text-black py-3 font-bold text-xs tracking-[0.1em] uppercase hover:bg-black hover:text-white transition-colors shadow-lg">
+                                    Quick Add
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-start">
+                                <h3 class="font-bold text-sm text-black uppercase tracking-wider">${product.title}</h3>
+                                <p class="text-sm text-gray-500">$${parseFloat(product.priceRange.minVariantPrice.amount).toFixed(2)}</p>
+                            </div>
+
+                            ${colorOption ? `
+                            <div class="flex items-center gap-2">
+                                <div class="flex gap-1">
+                                    ${colorOption.values.slice(0, 4).map(color => {
+                                        const isSelected = selectedState?.color === color;
+                                        const colorData = COLOR_PALETTE[color] || { hex: '#ccc' };
+                                        return `
+                                        <button onclick="event.stopPropagation(); variantSelector.selectColor('${product.handle}', '${color}', this)"
+                                                class="w-5 h-5 rounded-full border transition-all hover:scale-110 ${isSelected ? 'border-black ring-1 ring-black ring-offset-1' : 'border-gray-300'}"
+                                                style="background-color: ${colorData.hex}; ${color === 'Cream Yellow' || color === 'Milky Apricot' ? 'border-color: #ddd;' : ''}"
+                                                title="${color}">
+                                        </button>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                            ` : ''}
+
+                            ${sizeOption ? `
+                            <div class="flex items-center gap-1">
+                                ${sizeOption.values.slice(0, 5).map(size => {
+                                    const isSelected = selectedState?.size === size;
+                                    const isEV = size.toLowerCase().includes('extended');
+                                    const displaySize = isEV ? 'EV' : size;
+                                    return `
+                                    <button onclick="event.stopPropagation(); variantSelector.selectSize('${product.handle}', '${size}', this)"
+                                            class="w-7 h-7 text-[10px] font-bold border transition-all ${isSelected ? 'border-black bg-black text-white' : 'border-gray-200 hover:border-gray-400'}"
+                                            title="${size}">
+                                        ${displaySize}
+                                    </button>
+                                    `;
+                                }).join('')}
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+                lucide.createIcons();
+            },
+
+            async loadProductDetail(handle) {
+                const query = `
+                    query {
+                        product(handle: "${handle}") {
+                            id
+                            title
+                            handle
+                            description
+                            priceRange {
+                                minVariantPrice { amount currencyCode }
+                            }
+                            images(first: 5) {
+                                edges { node { url altText } }
+                            }
+                            options {
+                                name
+                                values
+                            }
+                            variants(first: 50) {
+                                edges {
+                                    node {
+                                        id
+                                        title
+                                        availableForSale
+                                        price { amount }
+                                        selectedOptions {
+                                            name
+                                            value
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    const data = await shopifyClient.fetch(query);
+                    const product = data.product;
+                    state.selectedProduct = product;
+
+                    if (!state.selectedVariants[handle]) {
+                        const firstVariant = product.variants.edges[0]?.node;
+                        const firstColor = firstVariant?.selectedOptions.find(opt => opt.name.toLowerCase().includes('color'))?.value || 
+                                          product.options.find(opt => opt.name.toLowerCase().includes('color'))?.values[0] || '';
+                        const firstSize = firstVariant?.selectedOptions.find(opt => opt.name.toLowerCase().includes('size'))?.value || 
+                                          product.options.find(opt => opt.name.toLowerCase().includes('size'))?.values[0] || 'M';
+
+                        state.selectedVariants[handle] = {
+                            color: firstColor,
+                            size: firstSize,
+                            variantId: firstVariant?.id
+                        };
+                    }
+
+                    const container = document.getElementById('product-detail-content');
+                    if (container && product) {
+                        const colorOption = product.options.find(opt => opt.name.toLowerCase().includes('color'));
+                        const sizeOption = product.options.find(opt => opt.name.toLowerCase().includes('size'));
+                        const selectedState = state.selectedVariants[handle];
+
+                        const initialColor = selectedState?.color || colorOption?.values[0];
+                        const initialImage = (initialColor && COLOR_PALETTE[initialColor]?.image) || product.images.edges[0]?.node.url;
+
+                        container.innerHTML = `
+                            <div class="space-y-4">
+                                <div class="aspect-[3/4] bg-gray-100 overflow-hidden">
+                                    <img id="main-image" src="${initialImage}" 
+                                         class="w-full h-full object-cover transition-opacity duration-300" alt="${product.title}">
+                                </div>
+                                <div class="flex space-x-4 overflow-x-auto pb-2 hide-scrollbar">
+                                    ${product.images.edges.map((img, i) => `
+                                        <button onclick="document.getElementById('main-image').src = '${img.node.url}'"
+                                                class="w-20 h-24 flex-shrink-0 bg-gray-100 overflow-hidden border-2 transition-colors hover:border-black focus:border-black">
+                                            <img src="${img.node.url}" class="w-full h-full object-cover" alt="">
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <div class="pt-8 md:pt-16 space-y-8">
+                                <div>
+                                    <h1 class="text-3xl md:text-4xl font-black mb-4 tracking-tight uppercase">${product.title}</h1>
+                                    <p class="text-xl text-gray-600">$${parseFloat(product.priceRange.minVariantPrice.amount).toFixed(2)}</p>
+                                </div>
+
+                                <div class="space-y-6">
+                                    ${colorOption ? `
+                                    <div>
+                                        <label class="text-xs font-bold tracking-[0.2em] text-gray-500 block mb-3 uppercase">
+                                            Color: <span id="selected-color-name" class="text-black">${selectedState?.color || colorOption.values[0]}</span>
+                                        </label>
+                                        <div class="flex flex-wrap gap-3">
+                                            ${colorOption.values.map((color, i) => {
+                                                const isSelected = selectedState?.color === color;
+                                                const colorData = COLOR_PALETTE[color] || { hex: '#ccc', active: true };
+                                                return `
+                                                <button onclick="variantSelector.selectColor('${handle}', '${color}', this, true)"
+                                                        class="w-12 h-12 rounded-full cursor-pointer border-2 transition-all duration-200 ${isSelected ? 'border-black ring-2 ring-black ring-offset-2' : 'border-gray-200 hover:border-gray-400'}"
+                                                        style="background-color: ${colorData.hex}; ${color === 'Cream Yellow' || color === 'Milky Apricot' ? 'border-color: #ddd;' : ''}"
+                                                        data-color="${color}"
+                                                        title="${color}">
+                                                </button>
+                                                `;
+                                            }).join('')}
+                                        </div>
+                                    </div>
+                                    ` : ''}
+
+                                    ${sizeOption ? `
+                                    <div>
+                                        <div class="flex justify-between mb-3">
+                                            <label class="text-xs font-bold tracking-[0.2em] text-gray-500 uppercase">
+                                                Size: <span id="selected-size-name" class="text-black">${selectedState?.size || sizeOption.values[0]}</span>
+                                            </label>
+                                            <button class="text-xs font-bold underline uppercase tracking-wider">Size Guide</button>
+                                        </div>
+                                        <div class="grid grid-cols-5 gap-3">
+                                            ${sizeOption.values.map((size, i) => {
+                                                const isSelected = selectedState?.size === size;
+                                                const isEV = size.toLowerCase().includes('extended');
+                                                const displaySize = isEV ? 'EV' : size;
+                                                return `
+                                                <button onclick="variantSelector.selectSize('${handle}', '${size}', this, true)"
+                                                        class="py-3 border font-bold text-sm transition-all duration-200 uppercase ${isSelected ? 'border-black bg-black text-white' : 'border-gray-200 hover:border-gray-400'}"
+                                                        data-size="${size}"
+                                                        title="${size}">
+                                                    ${displaySize}
+                                                </button>
+                                                `;
+                                            }).join('')}
+                                        </div>
+                                        ${sizeOption.values.some(s => s.toLowerCase().includes('extended')) ? `
+                                        <p class="text-[10px] text-gray-400 mt-2 uppercase tracking-wider">EV = Extended Version (Tall Sizes)</p>
+                                        ` : ''}
+                                    </div>
+                                    ` : ''}
+
+                                    <button onclick="variantSelector.addToCart('${handle}')"
+                                            class="w-full bg-black text-white py-5 font-bold tracking-[0.1em] uppercase hover:bg-gray-800 transition-colors text-sm">
+                                        Add to Cart
+                                    </button>
+
+                                    <p class="text-xs text-center text-gray-400">Free shipping on orders over $75</p>
+                                </div>
+
+                                <div class="pt-8 border-t border-gray-100">
+                                    <h3 class="font-bold mb-4 uppercase tracking-wider text-sm">Description</h3>
+                                    <p class="text-gray-600 leading-relaxed text-sm">${product.description || 'Premium activewear designed for performance and style.'}</p>
+                                </div>
+
+                                <div class="pt-8 border-t border-gray-100">
+                                    <h3 class="font-bold mb-4 uppercase tracking-wider text-sm">Complete the Look</h3>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        ${state.products.slice(0, 2).map(p => `
+                                            <div class="cursor-pointer group" onclick="router.navigate('product', '${p.handle}')">
+                                                <div class="aspect-[3/4] bg-gray-100 overflow-hidden mb-2">
+                                                    <img src="${p.images.edges[0]?.node.url}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                                                </div>
+                                                <p class="text-xs font-bold uppercase">${p.title}</p>
+                                                <p class="text-xs text-gray-500">$${parseFloat(p.priceRange.minVariantPrice.amount).toFixed(2)}</p>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        lucide.createIcons();
+                    }
+                } catch (error) {
+                    console.error('Failed to load product:', error);
+                    document.getElementById('product-detail-content').innerHTML = '<p class="col-span-full text-center text-gray-500">Product not found.</p>';
+                }
+            }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            cart.init();
+            router.navigate('home');
+            popup.init();
+        });
+    </script>
+</body>
+</html>
